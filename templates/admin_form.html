@@ -1,0 +1,482 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Attraction Form | BEYOND BADULLA
+{% endblock %}
+
+{% block content %}
+
+<section class="pagehero">
+    <div class="container">
+
+        <p class="eyebrow">
+            CONTENT MANAGEMENT
+        </p>
+
+        <h1>
+            {% if editing %}
+                Edit <em>attraction.</em>
+            {% else %}
+                Add a <em>new place.</em>
+            {% endif %}
+        </h1>
+
+        <p>
+            Add the information visitors need to discover and plan a visit.
+        </p>
+
+    </div>
+</section>
+
+
+<section class="section">
+
+    <div class="container narrow">
+
+        <form
+            class="adminform"
+            method="post"
+            enctype="multipart/form-data"
+        >
+
+            <!-- =====================================================
+                 01. PLACE INFORMATION
+                 ===================================================== -->
+
+            <div class="form-section-heading">
+
+                <div class="form-section-number">
+                    01
+                </div>
+
+                <div>
+                    <p class="eyebrow">
+                        BASIC DETAILS
+                    </p>
+
+                    <h2>
+                        Place <em>information.</em>
+                    </h2>
+
+                    <p>
+                        Introduce the attraction and describe what makes it worth visiting.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="form-divider"></div>
+
+
+            <!-- Name & Category -->
+
+            <div class="two">
+
+                <label>
+                    Name
+
+                    <input
+                        type="text"
+                        name="name"
+                        required
+                        value="{{ attraction['name'] if attraction else '' }}"
+                        placeholder="e.g. Nine Arches Bridge"
+                    >
+                </label>
+
+
+                <label>
+                    Category
+
+                    <input
+                        type="text"
+                        name="category"
+                        required
+                        value="{{ attraction['category'] if attraction else '' }}"
+                        placeholder="e.g. Heritage"
+                    >
+                </label>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <label>
+                Description
+
+                <textarea
+                    name="description"
+                    required
+                    rows="5"
+                    placeholder="Write a short description of this attraction..."
+                >{{ attraction['description'] if attraction else '' }}</textarea>
+
+            </label>
+
+
+            <!-- =====================================================
+                 02. VISIT DETAILS
+                 ===================================================== -->
+
+            <div class="form-section-heading">
+
+                <div class="form-section-number">
+                    02
+                </div>
+
+                <div>
+                    <p class="eyebrow">
+                        VISITOR INFORMATION
+                    </p>
+
+                    <h2>
+                        Visit <em>details.</em>
+                    </h2>
+
+                    <p>
+                        Provide useful information to help tourists plan their visit.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="form-divider"></div>
+
+
+            <!-- Opening & Closing -->
+
+            <div class="two">
+
+                <label>
+                    Opening time
+
+                    <input
+                        type="text"
+                        name="opening_time"
+                        value="{{ attraction['opening_time'] if attraction else '' }}"
+                        placeholder="e.g. 06:00 AM"
+                    >
+                </label>
+
+
+                <label>
+                    Closing time
+
+                    <input
+                        type="text"
+                        name="closing_time"
+                        value="{{ attraction['closing_time'] if attraction else '' }}"
+                        placeholder="e.g. 06:00 PM"
+                    >
+                </label>
+
+            </div>
+
+
+            <!-- Best Time & Duration -->
+
+            <div class="two">
+
+                <label>
+                    Best time to visit
+
+                    <input
+                        type="text"
+                        name="best_time"
+                        value="{{ attraction['best_time'] if attraction and 'best_time' in attraction.keys() else '' }}"
+                        placeholder="e.g. Early morning / Late afternoon"
+                    >
+                </label>
+
+
+                <label>
+                    Visit duration
+
+                    <input
+                        type="text"
+                        name="visit_duration"
+                        value="{{ attraction['visit_duration'] if attraction and 'visit_duration' in attraction.keys() else '' }}"
+                        placeholder="e.g. 30–60 minutes"
+                    >
+                </label>
+
+            </div>
+
+
+            <!-- Traveller Tip -->
+
+            <label>
+                Traveller tip
+
+                <textarea
+                    name="travel_tip"
+                    rows="3"
+                    placeholder="Add useful advice for visitors..."
+                >{{ attraction['travel_tip'] if attraction else '' }}</textarea>
+
+            </label>
+
+
+            <!-- =====================================================
+                 03. LOCATION
+                 ===================================================== -->
+
+            <div class="form-section-heading">
+
+                <div class="form-section-number">
+                    03
+                </div>
+
+                <div>
+                    <p class="eyebrow">
+                        MAP & DIRECTIONS
+                    </p>
+
+                    <h2>
+                        <em>Location.</em>
+                    </h2>
+
+                    <p>
+                        Add the attraction's distance, address and map coordinates.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="form-divider"></div>
+
+
+            <!-- Distance & Address -->
+
+            <div class="two">
+
+                <label>
+                    Distance
+
+                    <input
+                        type="text"
+                        name="distance"
+                        value="{{ attraction['distance'] if attraction else '' }}"
+                        placeholder="e.g. 700 m"
+                    >
+                </label>
+
+
+                <label>
+                    Address
+
+                    <input
+                        type="text"
+                        name="address"
+                        value="{{ attraction['address'] if attraction else '' }}"
+                        placeholder="e.g. Muthiyangana Road, Badulla"
+                    >
+                </label>
+
+            </div>
+
+
+            <!-- Latitude & Longitude -->
+
+            <div class="two">
+
+                <label>
+                    Latitude
+
+                    <input
+                        type="number"
+                        name="latitude"
+                        step="any"
+                        value="{{ attraction['latitude'] if attraction else '' }}"
+                        placeholder="e.g. 6.9934"
+                    >
+                </label>
+
+
+                <label>
+                    Longitude
+
+                    <input
+                        type="number"
+                        name="longitude"
+                        step="any"
+                        value="{{ attraction['longitude'] if attraction else '' }}"
+                        placeholder="e.g. 81.0560"
+                    >
+                </label>
+
+            </div>
+
+
+            <div class="field-hint">
+                These coordinates are used to open the attraction's location in Google Maps.
+            </div>
+
+
+            <!-- =====================================================
+                 04. MEDIA
+                 ===================================================== -->
+
+            <div class="form-section-heading">
+
+                <div class="form-section-number">
+                    04
+                </div>
+
+                <div>
+                    <p class="eyebrow">
+                        VISUAL CONTENT
+                    </p>
+
+                    <h2>
+                        <em>Media.</em>
+                    </h2>
+
+                    <p>
+                        Add a high-quality image to represent the attraction.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="form-divider"></div>
+
+
+            <label>
+                Attraction image
+
+                <input
+                    type="file"
+                    name="image"
+                    accept=".jpg,.jpeg,.png"
+                >
+            </label>
+
+
+            {% if attraction and attraction['image'] %}
+
+                <div class="current-image">
+
+                    <div class="current-image-label">
+                        CURRENT IMAGE
+                    </div>
+
+                    <div class="current-image-name">
+                        {{ attraction['image'] }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="field-hint">
+                Recommended formats: JPG, JPEG or PNG.
+            </div>
+
+
+            <!-- =====================================================
+                 05. PUBLISHING OPTIONS
+                 ===================================================== -->
+
+            <div class="form-section-heading">
+
+                <div class="form-section-number">
+                    05
+                </div>
+
+                <div>
+                    <p class="eyebrow">
+                        HOMEPAGE VISIBILITY
+                    </p>
+
+                    <h2>
+                        Publishing <em>options.</em>
+                    </h2>
+
+                    <p>
+                        Choose whether this attraction should appear among featured places.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="form-divider"></div>
+
+
+            <label class="checkbox-field">
+
+                <input
+                    type="checkbox"
+                    name="featured"
+                    value="1"
+                    {% if attraction and attraction['featured'] %}
+                        checked
+                    {% endif %}
+                >
+
+                <span>
+                    <strong>Feature on homepage</strong>
+                    <small>
+                        Display this attraction in the curated places section.
+                    </small>
+                </span>
+
+            </label>
+
+
+            <!-- =====================================================
+                 FORM ACTIONS
+                 ===================================================== -->
+
+            <div class="form-actions">
+
+                <div>
+                    <p class="form-save-note">
+                        {% if editing %}
+                            Review the information before saving your changes.
+                        {% else %}
+                            Make sure all attraction details are correct before publishing.
+                        {% endif %}
+                    </p>
+                </div>
+
+
+                <div class="actions">
+
+                    <a
+                        class="btn outline"
+                        href="{{ url_for('admin_dashboard') }}"
+                    >
+                        Cancel
+                    </a>
+
+
+                    <button
+                        class="btn primary"
+                        type="submit"
+                    >
+                        {% if editing %}
+                            Save changes
+                        {% else %}
+                            Save attraction
+                        {% endif %}
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

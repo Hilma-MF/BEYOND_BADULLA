@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+    <!-- Outer circle -->
+    <circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="2.5"></circle>
+
+    <!-- BB Monogram -->
+    <path d="M25 22V58" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+
+    <path d="M25 22H39C45 22 48 25 48 30C48 34 45 37 40 37H25" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+
+    <path d="M25 37H41C47 37 51 41 51 47C51 53 47 58 40 58H25" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+
+    <!-- Small landscape accent -->
+    <path d="M52 48L57 42L64 51" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+
+    <path d="M55 53H65" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path>
+</svg>

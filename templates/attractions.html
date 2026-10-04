@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore | BEYOND BADULLA{% endblock %}
+
+{% block content %}
+
+<section class="pagehero">
+    <div class="container">
+        <p class="eyebrow">DISCOVER UVA</p>
+        <h1>Explore <em>Badulla.</em></h1>
+        <p>Find a place that matches the way you want to spend your day.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <form class="filter" method="get">
+            <input
+                name="q"
+                value="{{q}}"
+                placeholder="Search places, experiences or locations..."
+            >
+
+            <select name="category">
+                <option value="">All categories</option>
+
+                {% for c in categories %}
+                    <option
+                        value="{{c['category']}}"
+                        {% if selected_category == c['category'] %}
+                            selected
+                        {% endif %}
+                    >
+                        {{c['category']}}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button class="btn primary">Search</button>
+        </form>
+
+        <p class="muted">
+            <b>{{attractions|length}}</b> places found
+        </p>
+
+        <div class="grid">
+
+            {% for a in attractions %}
+
+            <article class="card">
+
+                <a
+                    href="{{url_for('detail',id=a['id'])}}"
+                    class="pic"
+                >
+
+                    {% if a['image'] %}
+                        <img
+                            src="{{ url_for('static', filename='images/' + a['image']) }}"
+                            alt="{{ a['name'] }}"
+                        >
+                    {% else %}
+                        <span>{{a['name'][0]}}</span>
+                    {% endif %}
+
+                    <i>{{a['category']}}</i>
+
+                </a>
+
+                <div class="cardbody">
+
+                    <small>{{a['distance']}}</small>
+
+                    <h3>{{a['name']}}</h3>
+
+                    <p>
+                        {{a['description'][:120]}}...
+                    </p>
+
+                    <div class="row">
+
+                        <a
+                            class="text"
+                            href="{{url_for('detail',id=a['id'])}}"
+                        >
+                            View details →
+                        </a>
+
+                        {% if current_user %}
+
+                        <form
+                            method="post"
+                            action="{{url_for('add_plan',id=a['id'])}}"
+                        >
+                            <button class="plus">＋</button>
+                        </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% else %}
+
+            <div class="empty">
+                <h2>No places found</h2>
+                <p>Try another search.</p>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

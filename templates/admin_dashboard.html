@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin | BEYOND BADULLA{% endblock %}
+
+{% block content %}
+
+<section class="pagehero">
+    <div class="container">
+        <p class="eyebrow">ADMINISTRATION</p>
+        <h1>Manage <em>Badulla.</em></h1>
+        <p>Maintain attraction information for visitors.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="stats">
+            <div>
+                <small>Attractions</small>
+                <b>{{attractions|length}}</b>
+            </div>
+
+            <div>
+                <small>Tourist accounts</small>
+                <b>{{tourist_count}}</b>
+            </div>
+
+            <div>
+                <small>System</small>
+                <b>Live</b>
+            </div>
+        </div>
+
+        <div class="adminbar">
+            <h2>Attraction records</h2>
+            <a class="btn primary" href="{{url_for('admin_new')}}">＋ Add attraction</a>
+        </div>
+
+        <div class="tablewrap">
+            <table>
+                <tr>
+                    <th>Place</th>
+                    <th>Category</th>
+                    <th>Distance</th>
+                    <th>Actions</th>
+                </tr>
+
+                {% for a in attractions %}
+                <tr>
+                    <td>
+                        <b>{{a['name']}}</b>
+                        <small>{{a['address']}}</small>
+                    </td>
+
+                    <td>{{a['category']}}</td>
+
+                    <td>{{a['distance']}}</td>
+
+                    <td>
+                        <a href="{{url_for('admin_edit',id=a['id'])}}">Edit</a>
+
+                        <form
+                            class="inline"
+                            method="post"
+                            action="{{url_for('admin_delete',id=a['id'])}}"
+                            onsubmit="return confirm('Delete this attraction?')"
+                        >
+                            <button>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

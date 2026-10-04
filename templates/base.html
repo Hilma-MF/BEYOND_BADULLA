@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}BEYOND BADULLA{% endblock %}</title>
+
+    <meta
+        name="description"
+        content="BEYOND BADULLA — Discover attractions, hidden places and unforgettable day trips around Badulla."
+    >
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- =========================================================
+         NAVIGATION
+         ========================================================= -->
+
+    <header class="navbar">
+        <div class="container nav">
+
+            <!-- Brand -->
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brandLogo">
+    <img
+        src="{{ url_for('static', filename='images/beyond-badulla-logo.svg') }}"
+        alt="BEYOND BADULLA"
+    >
+</span>
+
+                <span class="brandText">
+                    <strong>BEYOND</strong>
+                    <small>BADULLA</small>
+                </span>
+            </a>
+
+
+            <!-- Mobile Menu Button -->
+            <button
+                id="navToggle"
+                class="toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-controls="navLinks"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+
+            <!-- Navigation Links -->
+            <nav id="navLinks">
+
+                <a href="{{ url_for('index') }}">
+                    Home
+                </a>
+
+                <a href="{{ url_for('attractions') }}">
+                    Explore
+                </a>
+
+
+                {% if current_user %}
+
+                    <a href="{{ url_for('plan') }}">
+                        My Plan
+                    </a>
+
+                    {% if current_role == 'admin' %}
+                        <a href="{{ url_for('admin_dashboard') }}">
+                            Admin
+                        </a>
+                    {% endif %}
+
+                    <a
+                        class="pill"
+                        href="{{ url_for('logout') }}"
+                    >
+                        Logout
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ url_for('login') }}">
+                        Login
+                    </a>
+
+                    <a
+                        class="pill"
+                        href="{{ url_for('register') }}"
+                    >
+                        Join Us
+                    </a>
+
+                {% endif %}
+
+
+                <!-- Theme Toggle
+                     IMPORTANT:
+                     This stays OUTSIDE the login condition,
+                     so it appears for both logged-in and
+                     logged-out users. -->
+                <button
+                    id="themeToggle"
+                    class="theme-toggle"
+                    type="button"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    ☾
+                </button>
+
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- =========================================================
+         FLASH MESSAGES
+         ========================================================= -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div class="flash-wrap">
+
+                {% for category, message in messages %}
+
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <!-- =========================================================
+         PREMIUM FOOTER
+         ========================================================= -->
+
+    <footer class="premium-footer">
+
+        <!-- =========================
+             CINEMATIC CTA
+             ========================= -->
+
+        <section class="footer-cta">
+
+            <div class="footer-cta-bg"></div>
+
+            <div class="footer-cta-overlay"></div>
+
+
+            <div class="container footer-cta-inner">
+
+                <div class="footer-cta-number">
+                    01
+                </div>
+
+
+                <div class="footer-cta-content">
+
+                    <p class="eyebrow">
+                        BEYOND BADULLA
+                    </p>
+
+                    <h2>
+                        Your next local
+                        <em>journey.</em>
+                    </h2>
+
+                    <p>
+                        Discover waterfalls, mountain trails,
+                        heritage landmarks and hidden stories
+                        around Badulla — then build your own
+                        one-day adventure.
+                    </p>
+
+
+                    <a
+                        class="footer-cta-button"
+                        href="{{ url_for('attractions') }}"
+                    >
+                        Start exploring
+                        <span>↗</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             MAIN FOOTER
+             ========================= -->
+
+        <section class="footer-main">
+
+            <div class="container">
+
+                <div class="foot">
+
+                    <!-- Brand -->
+                    <div class="footer-brand">
+
+                        <a
+                            class="brand footer-brand-logo"
+                            href="{{ url_for('index') }}"
+                        >
+
+                            <span class="brandLogo">
+    <img
+        src="{{ url_for('static', filename='images/beyond-badulla-logo.svg') }}"
+        alt="BEYOND BADULLA"
+    >
+</span>
+
+                            <span class="brandText">
+                                <strong>BEYOND</strong>
+                                <small>BADULLA</small>
+                            </span>
+
+                        </a>
+
+
+                        <p>
+                            A local guide to discovering
+                            the places, stories and experiences
+                            that make Badulla worth exploring.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Explore -->
+                    <div class="footer-column">
+
+                        <p class="footer-label">
+                            EXPLORE
+                        </p>
+
+                        <a href="{{ url_for('index') }}">
+                            Home
+                        </a>
+
+                        <a href="{{ url_for('attractions') }}">
+                            Attractions
+                        </a>
+
+                        {% if current_user %}
+                            <a href="{{ url_for('plan') }}">
+                                My Plan
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('login', next=url_for('plan')) }}">
+                                My Plan
+                            </a>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Project -->
+                    <div class="footer-column">
+
+                        <p class="footer-label">
+                            PROJECT
+                        </p>
+
+                        <span>
+                            BEYOND BADULLA
+                        </span>
+
+                        <span>
+                            Local Tourism
+                        </span>
+
+                        <span>
+                            Day-Visit Planner
+                        </span>
+
+                        <span>
+                            Badulla, Sri Lanka
+                        </span>
+
+                    </div>
+
+
+                    <!-- Keep Exploring -->
+                    <div class="footer-explore">
+
+                        <a
+                            href="{{ url_for('attractions') }}"
+                            class="footer-circle"
+                            aria-label="Keep exploring"
+                        >
+                            <span>
+                                KEEP<br>
+                                EXPLORING
+                            </span>
+
+                            <strong>↗</strong>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Bottom Bar -->
+                <div class="footer-bottom">
+
+                    <span>
+                        © 2026 BEYOND BADULLA
+                    </span>
+
+                    <span>
+                        Discover • Plan • Explore
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </footer>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | BEYOND BADULLA{% endblock %}
+
+{% block content %}
+
+<section class="auth">
+    <div class="authbox">
+        <p class="eyebrow">START EXPLORING</p>
+        <h1>Create your <em>account.</em></h1>
+        <p>Save attractions and create your one-day Badulla adventure.</p>
+
+        <form method="post">
+            <label>
+                Username
+                <input name="username" required>
+            </label>
+
+            <label>
+                Email
+                <input type="email" name="email" required>
+            </label>
+
+            <label>
+                Password
+                <input type="password" name="password" minlength="6" required>
+            </label>
+
+            <label>
+                Confirm password
+                <input type="password" name="confirm_password" minlength="6" required>
+            </label>
+
+            <button class="btn primary full">Create account</button>
+        </form>
+
+        <small>
+            Already registered?
+            <a href="{{url_for('login')}}">Log in</a>
+        </small>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Beyond Badulla | Discover More{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container heroIn">
+
+        <p class="eyebrow">WELCOME TO UVA</p>
+
+        <h1>
+            Go beyond<br>
+            <em>the ordinary.</em>
+        </h1>
+
+        <p>
+            Discover waterfalls, mountain trails, heritage landmarks and hidden stories around Badulla — then build your own one-day adventure.
+        </p>
+
+        <div class="actions">
+            <a class="btn primary" href="{{ url_for('attractions') }}">
+                Explore Badulla ↗
+            </a>
+
+            <a class="text" href="#categories">
+                Explore categories ↓
+            </a>
+        </div>
+
+        <div class="heroStat">
+            <strong>{{ total }}+</strong>
+            <span>places to discover</span>
+        </div>
+
+    </div>
+</section>
+
+
+<section class="section" id="categories">
+    <div class="container">
+
+        <div class="head">
+
+            <div>
+                <p class="eyebrow">FIND YOUR EXPERIENCE</p>
+
+                <h2>
+                    Something for every <em>traveller.</em>
+                </h2>
+            </div>
+
+            <a class="text" href="{{ url_for('attractions') }}">
+                View all ↗
+            </a>
+
+        </div>
+
+        <div class="cats">
+
+            {% for c in categories %}
+
+            <a href="{{ url_for('attractions', category=c['category']) }}">
+                ● {{ c['category'] }}
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+
+<section class="section soft">
+    <div class="container">
+
+        <p class="eyebrow">CURATED FOR YOU</p>
+
+        <h2>
+            Places worth <em>the journey.</em>
+        </h2>
+
+        <div class="grid">
+
+            {% for a in featured %}
+
+            <article class="card">
+
+                <a
+                    href="{{ url_for('detail', id=a['id']) }}"
+                    class="pic"
+                >
+
+                    {% if a['image'] %}
+
+                    <img
+                        src="{{ url_for('static', filename='images/' + a['image']) }}"
+                        alt="{{ a['name'] }}"
+                    >
+
+                    {% else %}
+
+                    <span>{{ a['name'][0] }}</span>
+
+                    {% endif %}
+
+                    <i>{{ a['category'] }}</i>
+
+                </a>
+
+                <div class="cardbody">
+
+                    <small>{{ a['distance'] }}</small>
+
+                    <h3>{{ a['name'] }}</h3>
+
+                    <p>
+                        {{ a['description'][:110] }}...
+                    </p>
+
+                    <a
+                        class="text"
+                        href="{{ url_for('detail', id=a['id']) }}"
+                    >
+                        Discover →
+                    </a>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+
+{% endblock %}

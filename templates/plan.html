@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}My Plan | BEYOND BADULLA{% endblock %}
+
+{% block content %}
+
+<section class="plan-hero">
+    <div class="container plan-hero-inner">
+
+        <div class="plan-hero-copy">
+            <p class="eyebrow">YOUR JOURNEY</p>
+
+            <h1>
+                My Badulla
+                <em>adventure.</em>
+            </h1>
+
+            <p>
+                Bring your favourite places together and shape your own
+                one-day journey through Badulla.
+            </p>
+        </div>
+
+        {% if attractions %}
+        <div class="plan-hero-stat">
+            <span>PLACES SELECTED</span>
+            <strong>{{ '%02d'|format(attractions|length) }}</strong>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+
+<section class="plan-section">
+
+    <div class="container">
+
+        {% if attractions %}
+
+        <!-- PLAN HEADER -->
+        <div class="plan-topbar">
+
+            <div>
+                <p class="eyebrow">YOUR DAY</p>
+
+                <h2>
+                    A journey worth
+                    <em>remembering.</em>
+                </h2>
+            </div>
+
+            <a class="btn outline" href="{{ url_for('attractions') }}">
+                + Add more
+            </a>
+
+        </div>
+
+
+        <!-- JOURNEY -->
+        <div class="journey">
+
+            {% for a in attractions %}
+
+            <article class="journey-item">
+
+                <!-- NUMBER -->
+                <div class="journey-number">
+                    {{ '%02d'|format(loop.index) }}
+                </div>
+
+
+                <!-- CONNECTOR -->
+                {% if not loop.last %}
+                <div class="journey-line"></div>
+                {% endif %}
+
+
+                <!-- CARD -->
+                <div class="journey-card">
+
+                    <!-- IMAGE -->
+                    <a
+                        href="{{ url_for('detail', id=a['id']) }}"
+                        class="journey-image"
+                    >
+
+                        {% if a['image'] %}
+
+                        <img
+                            src="{{ url_for('static', filename='images/' + a['image']) }}"
+                            alt="{{ a['name'] }}"
+                        >
+
+                        {% else %}
+
+                        <div class="journey-image-placeholder">
+                            {{ a['name'][0] }}
+                        </div>
+
+                        {% endif %}
+
+                        <span class="journey-category">
+                            {{ a['category'] }}
+                        </span>
+
+                    </a>
+
+
+                    <!-- CONTENT -->
+                    <div class="journey-content">
+
+                        <div class="journey-heading">
+
+                            <div>
+
+                                <small>STOP {{ '%02d'|format(loop.index) }}</small>
+
+                                <h3>
+                                    {{ a['name'] }}
+                                </h3>
+
+                            </div>
+
+                            <!-- REMOVE -->
+                            <form
+                                method="post"
+                                action="{{ url_for('remove_plan', id=a['id']) }}"
+                            >
+                                <button
+                                    class="journey-remove"
+                                    type="submit"
+                                    title="Remove from my plan"
+                                    aria-label="Remove {{ a['name'] }} from my plan"
+                                >
+                                    ×
+                                </button>
+                            </form>
+
+                        </div>
+
+
+                        <!-- META -->
+                        <div class="journey-meta">
+
+                            <div>
+                                <span>FROM HOME</span>
+                                <strong>{{ a['distance'] }}</strong>
+                            </div>
+
+                            <div>
+                                <span>EXPERIENCE</span>
+                                <strong>{{ a['category'] }}</strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+                        <div class="journey-actions">
+
+                            <a
+                                class="journey-details"
+                                href="{{ url_for('detail', id=a['id']) }}"
+                            >
+                                View details
+                                <span>↗</span>
+                            </a>
+
+                            <a
+                                class="journey-map"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="https://www.google.com/maps/search/?api=1&query={{ a['latitude'] }},{{ a['longitude'] }}"
+                            >
+                                Google Maps
+                                <span>↗</span>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- BOTTOM CTA -->
+        <div class="plan-cta">
+
+            <div>
+                <p class="eyebrow">KEEP EXPLORING</p>
+
+                <h2>
+                    Your next stop
+                    <em>could be waiting.</em>
+                </h2>
+
+                <p>
+                    Discover more places around Badulla and add them
+                    to your journey.
+                </p>
+            </div>
+
+            <a
+                class="btn primary"
+                href="{{ url_for('attractions') }}"
+            >
+                Explore places ↗
+            </a>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- EMPTY PLAN -->
+        <div class="plan-empty">
+
+            <div class="plan-empty-number">
+                00
+            </div>
+
+            <p class="eyebrow">YOUR JOURNEY IS EMPTY</p>
+
+            <h1>
+                Start with one
+                <em>beautiful place.</em>
+            </h1>
+
+            <p>
+                Explore Badulla's waterfalls, mountains, heritage landmarks
+                and hidden places, then save your favourites here.
+            </p>
+
+            <a
+                class="btn primary"
+                href="{{ url_for('attractions') }}"
+            >
+                Explore Badulla ↗
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
