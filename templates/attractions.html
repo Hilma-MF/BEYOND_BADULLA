@@ -4,112 +4,242 @@
 
 {% block content %}
 
-<section class="pagehero">
+<!-- COMPACT EDITORIAL HEADER -->
+<section class="pagehero explore-hero">
     <div class="container">
-        <p class="eyebrow">DISCOVER UVA</p>
-        <h1>Explore <em>Badulla.</em></h1>
-        <p>Find a place that matches the way you want to spend your day.</p>
+        <p class="eyebrow">DISCOVER UVA · FIND YOUR EXPERIENCE</p>
+        <h1>Find your next <em>escape.</em></h1>
+        <p>
+            From hidden waterfalls to mountain trails,
+            discover a place worth the journey.
+        </p>
     </div>
 </section>
 
-<section class="section">
+<!-- EXPLORE AND FILTER -->
+<section class="section explore-section">
     <div class="container">
 
-        <form class="filter" method="get">
-            <input
-                name="q"
-                value="{{q}}"
-                placeholder="Search places, experiences or locations..."
-            >
+        <!-- SEARCH BAR -->
+        <form
+            class="filter explore-filter"
+            method="get"
+            action="{{ url_for('attractions') }}"
+        >
+            <div class="search-autocomplete">
+                <input
+                    type="text"
+                    id="attractionSearch"
+                    name="q"
+                    value="{{ q }}"
+                    placeholder="Search places, experiences or locations..."
+                    autocomplete="off"
+                    aria-label="Search attractions"
+                    aria-controls="searchSuggestions"
+                    aria-autocomplete="list"
+                    aria-expanded="false"
+                >
 
-            <select name="category">
+                <div
+                    id="searchSuggestions"
+                    class="search-suggestions"
+                    role="listbox"
+                    aria-label="Attraction suggestions"
+                    hidden
+                ></div>
+            </div>
+
+            <select
+                name="category"
+                aria-label="Filter attractions by category"
+            >
                 <option value="">All categories</option>
 
                 {% for c in categories %}
                     <option
-                        value="{{c['category']}}"
+                        value="{{ c['category'] }}"
                         {% if selected_category == c['category'] %}
                             selected
                         {% endif %}
                     >
-                        {{c['category']}}
+                        {{ c['category'] }}
                     </option>
                 {% endfor %}
             </select>
 
-            <button class="btn primary">Search</button>
+            <button class="btn primary" type="submit">
+                Search <span aria-hidden="true">↗</span>
+            </button>
         </form>
 
-        <p class="muted">
-            <b>{{attractions|length}}</b> places found
-        </p>
+<!-- CLICKABLE CATEGORY PILLS -->
+<div class="explore-category-section">
+    <div class="explore-category-heading">
+        <p class="eyebrow">BROWSE BY INTEREST</p>
 
-        <div class="grid">
+        {% if selected_category or q %}
+            <a
+                class="explore-clear"
+                href="{{ url_for('attractions') }}"
+            >
+                Clear filters ×
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="explore-categories">
+
+        <!-- ALL PLACES -->
+        <a
+            href="{{ url_for('attractions') }}"
+            class="explore-category-pill {% if not selected_category and not q %}active{% endif %}"
+        >
+            <span class="category-dot"></span>
+            All places
+        </a>
+
+        <!-- ALL OTHER CATEGORIES -->
+        {% for c in categories %}
+            <a
+                href="{{ url_for('attractions', category=c['category']) }}"
+                class="explore-category-pill {% if selected_category == c['category'] and not q %}active{% endif %}"
+            >
+                <span class="category-dot"></span>
+                {{ c['category'] }}
+            </a>
+        {% endfor %}
+
+    </div>
+</div>
+        <!-- RESULTS HEADER -->
+        <div class="explore-results-header">
+            <div>
+                <p class="eyebrow">YOUR NEXT ADVENTURE</p>
+
+                <h2>
+                    {% if selected_category %}
+                        Explore <em>{{ selected_category }}.</em>
+                    {% elif q %}
+                        Search <em>results.</em>
+                    {% else %}
+                        Places worth <em>the journey.</em>
+                    {% endif %}
+                </h2>
+
+                <p class="explore-results-count">
+                    <strong>{{ attractions|length }}</strong>
+                    {% if attractions|length == 1 %}
+                        place found
+                    {% else %}
+                        places found
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if q or selected_category %}
+                <a
+                    class="explore-reset"
+                    href="{{ url_for('attractions') }}"
+                >
+                    Reset filters <span aria-hidden="true">↗</span>
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- ATTRACTION GRID -->
+        <div class="grid explore-grid">
 
             {% for a in attractions %}
 
-            <article class="card">
+                <article class="card explore-card">
 
-                <a
-                    href="{{url_for('detail',id=a['id'])}}"
-                    class="pic"
-                >
-
-                    {% if a['image'] %}
-                        <img
-                            src="{{ url_for('static', filename='images/' + a['image']) }}"
-                            alt="{{ a['name'] }}"
-                        >
-                    {% else %}
-                        <span>{{a['name'][0]}}</span>
-                    {% endif %}
-
-                    <i>{{a['category']}}</i>
-
-                </a>
-
-                <div class="cardbody">
-
-                    <small>{{a['distance']}}</small>
-
-                    <h3>{{a['name']}}</h3>
-
-                    <p>
-                        {{a['description'][:120]}}...
-                    </p>
-
-                    <div class="row">
-
-                        <a
-                            class="text"
-                            href="{{url_for('detail',id=a['id'])}}"
-                        >
-                            View details →
-                        </a>
-
-                        {% if current_user %}
-
-                        <form
-                            method="post"
-                            action="{{url_for('add_plan',id=a['id'])}}"
-                        >
-                            <button class="plus">＋</button>
-                        </form>
-
+                    <!-- IMAGE -->
+                    <a
+                        href="{{ url_for('detail', id=a['id']) }}"
+                        class="pic explore-card-image"
+                    >
+                        {% if a['image'] %}
+                            <img
+                                src="{{ url_for('static', filename='images/' + a['image']) }}"
+                                alt="{{ a['name'] }}"
+                                loading="lazy"
+                                onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/home-hero.png') }}';"
+                            >
+                        {% else %}
+                            <img
+                                src="{{ url_for('static', filename='images/home-hero.png') }}"
+                                alt="{{ a['name'] }}"
+                                loading="lazy"
+                            >
                         {% endif %}
+
+                        <i>{{ a['category'] }}</i>
+                    </a>
+
+                    <!-- CARD DETAILS -->
+                    <div class="cardbody explore-card-body">
+
+                        <div class="explore-card-meta">
+                            <span class="explore-location-dot"></span>
+                            <small>{{ a['distance'] }}</small>
+                        </div>
+
+                        <h3>{{ a['name'] }}</h3>
+
+                        <p>
+                            {% if a['description'] %}
+                                {{ a['description'][:120] }}{% if a['description']|length > 120 %}…{% endif %}
+                            {% else %}
+                                Discover this attraction in Badulla.
+                            {% endif %}
+                        </p>
+
+                        <div class="explore-card-actions">
+                            <a
+                                class="text"
+                                href="{{ url_for('detail', id=a['id']) }}"
+                            >
+                                Discover place <span aria-hidden="true">↗</span>
+                            </a>
+
+                            {% if current_user %}
+                                <form
+                                    method="post"
+                                    action="{{ url_for('add_plan', id=a['id']) }}"
+                                >
+                                    <button
+                                        class="plus"
+                                        type="submit"
+                                        aria-label="Add {{ a['name'] }} to my plan"
+                                        title="Add to my plan"
+                                    >
+                                        ＋
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
 
                     </div>
 
-                </div>
-
-            </article>
+                </article>
 
             {% else %}
 
-            <div class="empty">
-                <h2>No places found</h2>
-                <p>Try another search.</p>
-            </div>
+                <!-- EMPTY STATE -->
+                <div class="empty explore-empty">
+                    <p class="eyebrow">NOT FOUND THIS TIME</p>
+                    <h2>No places <em>found.</em></h2>
+                    <p>
+                        Try another keyword or explore a different category
+                        to find your next destination.
+                    </p>
+                    <a
+                        class="btn primary"
+                        href="{{ url_for('attractions') }}"
+                    >
+                        Explore all places ↗
+                    </a>
+                </div>
 
             {% endfor %}
 

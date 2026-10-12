@@ -614,3 +614,134 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+/* LIVE ATTRACTION SEARCH SUGGESTIONS */
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('attractionSearch');
+    const suggestionsBox = document.getElementById('searchSuggestions');
+
+    if (!searchInput || !suggestionsBox) return;
+
+    let searchTimer;
+    let activeRequest = null;
+
+    function hideSuggestions() {
+        suggestionsBox.hidden = true;
+        suggestionsBox.replaceChildren();
+        searchInput.setAttribute('aria-expanded', 'false');
+    }
+
+    function showMessage(message) {
+        suggestionsBox.replaceChildren();
+
+        const item = document.createElement('div');
+        item.className = 'suggestion-message';
+        item.textContent = message;
+
+        suggestionsBox.appendChild(item);
+        suggestionsBox.hidden = false;
+        searchInput.setAttribute('aria-expanded', 'true');
+    }
+
+    searchInput.setAttribute('aria-expanded', 'false');
+
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+
+        if (activeRequest) {
+            activeRequest.abort();
+            activeRequest = null;
+        }
+
+        const query = searchInput.value.trim();
+
+        if (query.length < 2) {
+            hideSuggestions();
+            return;
+        }
+
+        searchTimer = setTimeout(async () => {
+            const controller = new AbortController();
+            activeRequest = controller;
+
+            showMessage('Searching places...');
+
+            try {
+                const response = await fetch(
+                    `/api/attraction-suggestions?q=${encodeURIComponent(query)}`,
+                    { signal: controller.signal }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Search request failed');
+                }
+
+                const results = await response.json();
+
+                if (searchInput.value.trim() !== query) return;
+
+                suggestionsBox.replaceChildren();
+
+                if (results.length === 0) {
+                    showMessage('No matching places found.');
+                    return;
+                }
+
+                results.forEach(attraction => {
+                    const link = document.createElement('a');
+
+                    link.className = 'suggestion-item';
+                    link.href = attraction.url;
+                    link.setAttribute('role', 'option');
+
+                    const details = document.createElement('span');
+                    details.className = 'suggestion-details';
+
+                    const name = document.createElement('strong');
+                    name.textContent = attraction.name;
+
+                    const category = document.createElement('small');
+                    category.textContent = attraction.category;
+
+                    details.append(name, category);
+                    link.appendChild(details);
+
+                    if (attraction.distance) {
+                        const distance = document.createElement('small');
+                        distance.className = 'suggestion-distance';
+                        distance.textContent = attraction.distance;
+                        link.appendChild(distance);
+                    }
+
+                    suggestionsBox.appendChild(link);
+                });
+
+                suggestionsBox.hidden = false;
+                searchInput.setAttribute('aria-expanded', 'true');
+
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    hideSuggestions();
+                }
+            } finally {
+                if (activeRequest === controller) {
+                    activeRequest = null;
+                }
+            }
+        }, 200);
+    });
+
+    document.addEventListener('click', event => {
+        if (
+            !searchInput.contains(event.target) &&
+            !suggestionsBox.contains(event.target)
+        ) {
+            hideSuggestions();
+        }
+    });
+
+    searchInput.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+            hideSuggestions();
+        }
+    });
+});

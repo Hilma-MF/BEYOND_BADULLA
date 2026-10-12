@@ -10,7 +10,8 @@ from flask import (
     url_for,
     session,
     flash,
-    abort
+    abort,
+    jsonify
 )
 
 from werkzeug.security import (
@@ -292,6 +293,49 @@ def attractions():
         selected_category=cat
     )
 
+# =========================================================
+# LIVE ATTRACTION SEARCH SUGGESTIONS
+# =========================================================
+
+@app.route("/api/attraction-suggestions")
+def attraction_suggestions():
+    q = request.args.get("q", "").strip()
+
+    if len(q) < 2:
+        return jsonify([])
+
+    c = get_connection()
+
+    search_value = f"%{q}%"
+
+    rows = c.execute(
+        """
+        SELECT id, name, category, distance
+        FROM attractions
+        WHERE name LIKE ?
+           OR category LIKE ?
+           OR address LIKE ?
+           OR description LIKE ?
+        ORDER BY featured DESC, name
+        LIMIT 8
+        """,
+        (search_value, search_value, search_value, search_value)
+    ).fetchall()
+
+    suggestions = [
+        {
+            "id": row["id"],
+            "name": row["name"],
+            "category": row["category"],
+            "distance": row["distance"],
+            "url": url_for("detail", id=row["id"])
+        }
+        for row in rows
+    ]
+
+    c.close()
+
+    return jsonify(suggestions)
 
 # =========================================================
 # ATTRACTION DETAILS
