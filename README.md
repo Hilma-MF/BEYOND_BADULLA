@@ -23,9 +23,6 @@ python app.py
 ```
 Open http://127.0.0.1:5000
 
-## Admin demo
-Username: admin
-Password: admin123
 
 ## Sprint structure
 - Sprint 1: foundation and core functionality
